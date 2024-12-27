@@ -3,21 +3,41 @@ package com.backend.aji.service;
 import com.backend.aji.entity.Order;
 import com.backend.aji.repository.CustomerRepository;
 import com.backend.aji.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private CustomerRepository customerRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
+    private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
+
+    public OrderService(OrderRepository orderRepository, CustomerRepository customerRepository) {
+        this.orderRepository = orderRepository;
+        this.customerRepository = customerRepository;
+    }
+
+    public List<Order> getAllOrders() {
+        TypedQuery<Order> query = entityManager.createQuery("SELECT o FROM Order o", Order.class);
+        return query.getResultList();
+    }
+
+    public Optional<Order> getOrderById(Long id) {
+        Order order = entityManager.find(Order.class, id);
+        return Optional.ofNullable(order);
+    }
+
+    @Transactional
     public Order createOrder(Order order) {
-
         if (order.getCustomer() != null && order.getCustomer().getId() != null) {
             Long customerId = order.getCustomer().getId();
             if (!customerRepository.existsById(customerId)) {
@@ -27,29 +47,27 @@ public class OrderService {
             throw new IllegalArgumentException("Customer ID must be provided.");
         }
 
-        return orderRepository.save(order);
+        entityManager.persist(order);
+        return order;
     }
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
-    }
-
-    public Order getOrderById(Long id) {
-        return orderRepository.findById(id).orElse(null);
-    }
-
+    @Transactional
     public Order updateOrder(Long id, Order orderDetails) {
-        Order order = orderRepository.findById(id).orElse(null);
+        Order order = entityManager.find(Order.class, id);
         if (order != null) {
             order.setOrderDate(orderDetails.getOrderDate());
             order.setAmount(orderDetails.getAmount());
             order.setCustomer(orderDetails.getCustomer());
-            return orderRepository.save(order);
+            entityManager.merge(order);
         }
-        return null;
+        return order;
     }
 
+    @Transactional
     public void deleteOrder(Long id) {
-        orderRepository.deleteById(id);
+        Order order = entityManager.find(Order.class, id);
+        if (order != null) {
+            entityManager.remove(order);
+        }
     }
 }
