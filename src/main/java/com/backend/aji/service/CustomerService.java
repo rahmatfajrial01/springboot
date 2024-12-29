@@ -1,5 +1,6 @@
 package com.backend.aji.service;
 
+import com.backend.aji.dto.CustomerDTO;
 import com.backend.aji.entity.Customer;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -27,17 +28,20 @@ public class CustomerService {
     }
 
     @Transactional
-    public Customer createCustomer(Customer customer) {
+    public Customer createCustomer(CustomerDTO customerDTO) {
+        Customer customer = new Customer();
+        customer.setName(customerDTO.getName());
+        customer.setEmail(customerDTO.getEmail());
         entityManager.persist(customer);
         return customer;
     }
 
     @Transactional
-    public Customer updateCustomer(Long id, Customer customerDetails) {
+    public Customer updateCustomer(Long id, CustomerDTO customerDTO) {
         Customer customer = entityManager.find(Customer.class, id);
         if (customer != null) {
-            customer.setName(customerDetails.getName());
-            customer.setEmail(customerDetails.getEmail());
+            customer.setName(customerDTO.getName());
+            customer.setEmail(customerDTO.getEmail());
             entityManager.merge(customer);
         }
         return customer;
