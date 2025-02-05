@@ -3,14 +3,21 @@ package com.backend.aji.dto;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Setter
+@Getter
 public class OrderDTO {
 
+    // Getters dan Setters
     @NotNull(message = "Order date is mandatory")
-    @Future(message = "Order date must be in the future")
-    private LocalDateTime orderDate;
+    private LocalDateTime orderDate = LocalDateTime.now();
+
+    @NotNull(message = "productName is mandatory")
+    private String productName;
 
     @NotNull(message = "Amount is mandatory")
     @Min(value = 0, message = "Amount must be greater than or equal to 0")
@@ -19,28 +26,4 @@ public class OrderDTO {
     @NotNull(message = "Customer ID is mandatory")
     private Long customerId;
 
-    // Getters dan Setters
-    public LocalDateTime getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
 }

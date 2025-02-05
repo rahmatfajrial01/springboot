@@ -47,7 +47,9 @@ public class OrderService {
                 .map(order -> new CustomerOrdersResponse.OrderSummary(
                         order.getId(),
                         order.getOrderDate().toString(),
-                        order.getAmount()))
+                        order.getAmount(),
+                        order.getProductName()
+                ))
                 .collect(Collectors.toList());
 
         return new CustomerOrdersResponse(customerId, orderSummaries, totalAmount);
@@ -60,6 +62,7 @@ public class OrderService {
 
         Order order = new Order();
         order.setOrderDate(orderDTO.getOrderDate());
+        order.setProductName(orderDTO.getProductName());
         order.setAmount(orderDTO.getAmount());
         order.setCustomer(entityManager.find(Customer.class, orderDTO.getCustomerId())); // Set customer
 
@@ -72,6 +75,7 @@ public class OrderService {
         Order order = entityManager.find(Order.class, id);
         if (order != null) {
             order.setOrderDate(orderDTO.getOrderDate());
+            order.setProductName(orderDTO.getProductName());
             order.setAmount(orderDTO.getAmount());
             order.setCustomer(entityManager.find(Customer.class, orderDTO.getCustomerId()));
             entityManager.merge(order);

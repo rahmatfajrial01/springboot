@@ -4,6 +4,7 @@ import com.backend.aji.response.ApiResponse;
 import com.backend.aji.dto.OrderDTO;
 import com.backend.aji.entity.Order;
 import com.backend.aji.service.OrderService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/orders")
 @Validated
+@Tag(name = "Orders", description = "API for managing orders")
 public class OrderController {
 
     @Autowired
