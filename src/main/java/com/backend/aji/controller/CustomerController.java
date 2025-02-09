@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/customers")
 @Validated
-@Tag(name = "Customer", description = "API for managing customers")
+@Tag(name = "Customer")
 public class CustomerController {
 
     @Autowired
