@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Getter
 public class OrderDTO {
 
-    // Getters dan Setters
     @NotNull(message = "Order date is mandatory")
     private LocalDateTime orderDate = LocalDateTime.now();
 
